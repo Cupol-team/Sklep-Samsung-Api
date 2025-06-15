@@ -21,6 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(product_router)
-app.include_router(photo_router)
-app.include_router(category_router)
+app.include_router(product_router, prefix="/samsung/api")
+app.include_router(photo_router, prefix="/samsung/api")
+app.include_router(category_router, prefix="/samsung/api")

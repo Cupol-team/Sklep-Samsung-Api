@@ -1,0 +1,31 @@
+name: "Deploy Sklep Samsung Api"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Сборка и деплой API
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t sklep-samsung-api:latest .
+
+      - name: Deploy with Docker
+        run: |
+          docker stop sklep-samsung-api || true
+          docker rm sklep-samsung-api || true
+          docker run -d --name sklep-samsung-api --restart unless-stopped \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -p 4789:4789 \
+            sklep-samsung-api:latest 
